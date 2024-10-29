@@ -1,0 +1,120 @@
+/* styles.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #333;
+}
+
+.app-container {
+    width: 90%;
+    max-width: 600px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.note-form h2,
+.notes-list h2 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+#noteForm {
+    display: flex;
+    flex-direction: column;
+}
+
+#noteTitle,
+#noteContent {
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+#noteContent {
+    height: 80px;
+    resize: none;
+}
+
+.btn {
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+.notes-list ul {
+    list-style: none;
+    margin-top: 10px;
+}
+
+.note {
+    background-color: #fafafa;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.note h3 {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.note p {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.note-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.note-actions .edit {
+    background-color: #ff9800;
+}
+
+.note-actions .delete {
+    background-color: #f44336;
+}
+
+.note-actions .edit:hover {
+    background-color: #e68900;
+}
+
+.note-actions .delete:hover {
+    background-color: #d32f2f;
+}
