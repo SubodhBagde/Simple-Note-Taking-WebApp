@@ -22,3 +22,24 @@ function renderNotes() {
         notesContainer.appendChild(noteElement);
     });
 }
+
+function addOrUpdateNote() {
+    const title = noteTitle.value.trim();
+    const content = noteContent.value.trim();
+
+    if (title && content) {
+        if (editIndex !== null) {
+            // Update note
+            notes[editIndex] = { title, content };
+            editIndex = null;
+        } else {
+            // Add new note
+            notes.push({ title, content });
+        }
+        
+        noteTitle.value = "";
+        noteContent.value = "";
+        saveNotes();
+        renderNotes();
+    }
+}
