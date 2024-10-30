@@ -22,14 +22,15 @@ var (
 	mutex     sync.Mutex
 )
 
-func main() {
-	loadNotes()
+func enableCORS(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	http.HandleFunc("/api/notes", handleNotes)
-	http.HandleFunc("/api/notes/", handleNoteByID)
-
-	fmt.Println("Server started at http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 }
 
 func loadNotes() {
@@ -54,6 +55,10 @@ func saveNotes() {
 }
 
 func handleNotes(w http.ResponseWriter, r *http.Request) {
+	enableCORS(w, r)
+	if r.Method == "OPTIONS" {
+		return
+	}
 	mutex.Lock()
 	defer mutex.Unlock()
 
@@ -77,6 +82,10 @@ func handleNotes(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleNoteByID(w http.ResponseWriter, r *http.Request) {
+	enableCORS(w, r)
+	if r.Method == "OPTIONS" {
+		return
+	}
 	mutex.Lock()
 	defer mutex.Unlock()
 
@@ -132,4 +141,14 @@ func findNoteIndexByID(id int) int {
 		}
 	}
 	return -1
+}
+
+func main() {
+	loadNotes()
+
+	http.HandleFunc("/api/notes", handleNotes)
+	http.HandleFunc("/api/notes/", handleNoteByID)
+
+	fmt.Println("Server started at http://localhost:8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
