@@ -11,8 +11,13 @@ noteForm.addEventListener("submit", function (event) {
 async function loadNotes() {
     const response = await fetch("http://localhost:8080/api/notes");
     const data = await response.json();
-    notesContainer.innerHTML = "";
 
+    if (!Array.isArray(data)) {
+        console.error("Invalid data format:", data);
+        return;
+    }
+
+    notesContainer.innerHTML = "";
     data.forEach(note => {
         const noteElement = document.createElement("li");
         noteElement.classList.add("note");
