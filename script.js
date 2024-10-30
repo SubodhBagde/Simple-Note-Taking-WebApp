@@ -1,8 +1,12 @@
-const notesContainer = document.getElementById("notes-container");
-const noteTitle = document.getElementById("note-title");
-const noteContent = document.getElementById("note-content");
+const notesContainer = document.getElementById("notesContainer");
+const noteTitle = document.getElementById("noteTitle");
+const noteContent = document.getElementById("noteContent");
+const noteForm = document.getElementById("noteForm");
 
-document.getElementById("save-note").addEventListener("click", addOrUpdateNote);
+noteForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    addOrUpdateNote();
+});
 
 async function loadNotes() {
     const response = await fetch("http://localhost:8080/api/notes");
@@ -10,13 +14,15 @@ async function loadNotes() {
     notesContainer.innerHTML = "";
 
     data.forEach(note => {
-        const noteElement = document.createElement("div");
+        const noteElement = document.createElement("li");
         noteElement.classList.add("note");
         noteElement.innerHTML = `
-            <h2>${note.title}</h2>
+            <h3>${note.title}</h3>
             <p>${note.content}</p>
-            <button onclick="editNote(${note.id})">Edit</button>
-            <button onclick="deleteNote(${note.id})">Delete</button>
+            <div class="note-actions">
+                <button onclick="editNote(${note.id})" class="btn edit">Edit</button>
+                <button onclick="deleteNote(${note.id})" class="btn delete">Delete</button>
+            </div>
         `;
         notesContainer.appendChild(noteElement);
     });
@@ -45,7 +51,7 @@ async function addOrUpdateNote() {
 
         noteTitle.value = "";
         noteContent.value = "";
-        delete noteTitle.dataset.id;  
+        delete noteTitle.dataset.id;
         loadNotes();
     }
 }
@@ -56,7 +62,7 @@ async function editNote(id) {
 
     noteTitle.value = note.title;
     noteContent.value = note.content;
-    noteTitle.dataset.id = note.id;  
+    noteTitle.dataset.id = note.id;
 }
 
 async function deleteNote(id) {
