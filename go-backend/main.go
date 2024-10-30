@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -34,7 +33,7 @@ func main() {
 }
 
 func loadNotes() {
-	file, err := ioutil.ReadFile(notesFile)
+	file, err := os.ReadFile(notesFile)
 	if err != nil {
 		if os.IsNotExist(err) {
 			notes = []Note{}
@@ -51,7 +50,7 @@ func saveNotes() {
 	if err != nil {
 		log.Fatalf("Error saving notes: %v", err)
 	}
-	ioutil.WriteFile(notesFile, data, 0644)
+	os.WriteFile(notesFile, data, 0644)
 }
 
 func handleNotes(w http.ResponseWriter, r *http.Request) {
