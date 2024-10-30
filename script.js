@@ -1,45 +1,69 @@
-const noteForm = document.getElementById("noteForm");
-const noteTitle = document.getElementById("noteTitle");
-const noteContent = document.getElementById("noteContent");
-const notesContainer = document.getElementById("notesContainer");
+const notesContainer = document.getElementById("notes-container");
+const noteTitle = document.getElementById("note-title");
+const noteContent = document.getElementById("note-content");
 
-let notes = JSON.parse(localStorage.getItem("notes")) || [];
-let editIndex = null;
+document.getElementById("save-note").addEventListener("click", addOrUpdateNote);
 
-function renderNotes() {
+async function loadNotes() {
+    const response = await fetch("http://localhost:8080/api/notes");
+    const data = await response.json();
     notesContainer.innerHTML = "";
-    notes.forEach((note, index) => {
-        const noteElement = document.createElement("li");
+
+    data.forEach(note => {
+        const noteElement = document.createElement("div");
         noteElement.classList.add("note");
         noteElement.innerHTML = `
-            <h3>${note.title}</h3>
+            <h2>${note.title}</h2>
             <p>${note.content}</p>
-            <div class="note-actions">
-                <button class="btn edit" onclick="editNote(${index})">Edit</button>
-                <button class="btn delete" onclick="deleteNote(${index})">Delete</button>
-            </div>
+            <button onclick="editNote(${note.id})">Edit</button>
+            <button onclick="deleteNote(${note.id})">Delete</button>
         `;
         notesContainer.appendChild(noteElement);
     });
 }
 
-function addOrUpdateNote() {
+async function addOrUpdateNote() {
     const title = noteTitle.value.trim();
     const content = noteContent.value.trim();
 
     if (title && content) {
-        if (editIndex !== null) {
-            // Update note
-            notes[editIndex] = { title, content };
-            editIndex = null;
-        } else {
-            // Add new note
-            notes.push({ title, content });
+        let method = "POST";
+        let url = "http://localhost:8080/api/notes";
+
+        if (noteTitle.dataset.id) { 
+            method = "PUT";
+            url = `http://localhost:8080/api/notes/${noteTitle.dataset.id}`;
         }
-        
+
+        await fetch(url, {
+            method: method,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ title, content })
+        });
+
         noteTitle.value = "";
         noteContent.value = "";
-        saveNotes();
-        renderNotes();
+        delete noteTitle.dataset.id;  
+        loadNotes();
     }
 }
+
+async function editNote(id) {
+    const response = await fetch(`http://localhost:8080/api/notes/${id}`);
+    const note = await response.json();
+
+    noteTitle.value = note.title;
+    noteContent.value = note.content;
+    noteTitle.dataset.id = note.id;  
+}
+
+async function deleteNote(id) {
+    await fetch(`http://localhost:8080/api/notes/${id}`, {
+        method: "DELETE"
+    });
+    loadNotes();
+}
+
+loadNotes();
